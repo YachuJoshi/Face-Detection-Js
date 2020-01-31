@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <script defer src="face-api.min.js"> </script>
-    <script defer src="script.js"> </script> 
+    <script defer src="script.js"> </script>
     <style>
         body {
             margin: 0;
@@ -16,15 +17,32 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         canvas {
             position: absolute;
         }
 
-    </style> 
+        .feeling-description {
+            position: absolute;
+            text-align: center;
+            font-size: 22px;
+            top: 640px;
+            left: 480px;
+        }
+
+        .my-audio {
+            position: absolute;
+            outline: none;
+            top: 650px;
+            left: 720px;
+        }
+    </style>
 </head>
+
 <body>
     <video id="video" width="720" height="560" autoplay muted> </video>
 </body>
+
 </html>

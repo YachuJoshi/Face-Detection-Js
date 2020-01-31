@@ -1,1 +1,1 @@
-Face Detection in JavaScript using face-api.
+Emotion Detection & Music Player in JavaScript. 

@@ -1,3 +1,5 @@
+let finalExpression;
+
 const video = document.getElementById('video');
 Promise.all([
     faceapi.nets.tinyFaceDetector.loadFromUri('./models'),
@@ -8,7 +10,7 @@ Promise.all([
 
 function startVideo() {
     navigator.getUserMedia(
-        { video: {} }, 
+        { video: {} },
         stream => video.srcObject = stream,
         err => console.error(err)
     )
@@ -22,13 +24,35 @@ video.addEventListener('play', () => {
         height: video.height
     }
     faceapi.matchDimensions(canvas, displaySize);
-    setInterval(async () => {
+    const faceDetector = setInterval(async () => {
         const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).
-        withFaceLandmarks().withFaceExpressions();
+            withFaceLandmarks().withFaceExpressions();
         const resizedDetections = faceapi.resizeResults(detections, displaySize);
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
         faceapi.draw.drawDetections(canvas, resizedDetections);
         faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
         faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
-    });
-})
+        if (detections.length) {
+            let expressionsObj = detections[0].expressions;
+            Object.keys(expressionsObj).forEach(expression => {
+                if (Math.round(expressionsObj[expression]) === 1) {
+                    finalExpression = expression;
+                }
+                clearInterval(faceDetector);
+            });
+        }
+        let feelingElem = document.createElement('p');
+        feelingElem.className = 'feeling-description';
+        feelingElem.textContent = `You're Feeling ${finalExpression.charAt(0).toUpperCase() + finalExpression.slice(1)}`;
+        document.body.appendChild(feelingElem);
+        playMusic(finalExpression);
+    }, 4000);
+});
+
+function playMusic(expression) {
+    let htmlMarkup = `
+    <audio class="my-audio" controls autoplay>
+        <source src="musicList/${expression}/Swift.mp3" type="audio/mpeg">
+    </audio>`;
+    document.querySelector('body').insertAdjacentHTML('beforeend', htmlMarkup);
+}
